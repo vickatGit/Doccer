@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 
-import { docApi, setupDocApi } from "@/api";
+import { setupDocApi } from "@/api";
 import { useGoogleLogin } from "@react-oauth/google";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import chatbot from "../../assets/chatbot.png";
 import check from "../../assets/check.png";
@@ -12,7 +13,11 @@ const index = () => {
   const login = useGoogleLogin({
     flow: "auth-code",
     onSuccess: async (auth) => {
-      const res = await docApi.post("/api/auth/google", {
+      const env = import.meta.env.VITE_ENV;
+      const devBaseurl = import.meta.env.VITE_DEV_BASE_URL;
+      const prodBaseurl = import.meta.env.VITE_PROD_BASE_URL;
+      const baseUrl = env === "dev" ? devBaseurl : prodBaseurl;
+      const res = await axios.post(`${baseUrl}/api/auth/google`, {
         token: auth.code,
       });
       const authToken = res.data.authToken;
