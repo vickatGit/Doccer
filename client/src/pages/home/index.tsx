@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import { setupDocApi } from "@/api";
+import { docApi, setupDocApi } from "@/api";
 import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -13,7 +13,7 @@ const index = () => {
   const login = useGoogleLogin({
     flow: "auth-code",
     onSuccess: async (auth) => {
-      const res = await axios.post("http://localhost:5001/api/auth/google", {
+      const res = await docApi.post("/api/auth/google", {
         token: auth.code,
       });
       const authToken = res.data.authToken;
