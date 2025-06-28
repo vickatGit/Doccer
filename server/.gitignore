@@ -1,0 +1,67 @@
+# Node dependencies
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Runtime files
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Environment variables
+.env
+.env.*   # Optional for multiple environments like .env.dev
+
+# Debug and crash files
+*.tgz
+*.swp
+*.swo
+*.orig
+*.rej
+*.bak
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# VSCode settings
+.vscode/
+
+# Coverage directory
+coverage/
+
+# Build output
+dist/
+build/
+
+# Optional npm cache directory
+.npm/
+
+# Logs and temp files from PM2
+pids/
+*.pid
+*.log
+pm2-logs/
+
+# Local database
+*.sqlite
+*.sqlite3
+
+# Temporary files
+tmp/
+temp/
+
+# Logs for next or other tools
+.next/
+out/
+
+# Firebase and service worker artifacts (optional)
+firebase-debug.log
+firebase-error.log

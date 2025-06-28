@@ -1,0 +1,10 @@
+name: Doccer
+runtime:
+  name: nodejs
+  options:
+    packagemanager: npm
+description: Doccer - Pdf Chat
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: https://api.pulumi.com/api/ai/chat/conversations/vikasAtPulumi/vikasAtPulumi/b671f5b5-8cba-48f4-b2b4-d74ca6e72db7/programs/GcF4MBY.zip
