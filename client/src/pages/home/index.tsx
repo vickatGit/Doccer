@@ -2,7 +2,6 @@ import { useEffect } from "react";
 
 import { docApi, setupDocApi } from "@/api";
 import { useGoogleLogin } from "@react-oauth/google";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import chatbot from "../../assets/chatbot.png";
 import check from "../../assets/check.png";
