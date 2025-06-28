@@ -1,9 +1,9 @@
 import { getMessages } from "@/api";
-import { AppDispatch, RootState } from "@/store";
-import { IMessage, setMessages } from "@/store/reducers/chat";
+import { RootState } from "@/store";
+import { IMessage } from "@/store/reducers/chat";
 import { DocumentIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import FriendMessage from "./FriendMessage";
 import Input from "./Input";
 import UserMessage from "./UserMessage";
@@ -16,7 +16,6 @@ const ChatPage = () => {
   const chatsRef = useRef<HTMLDivElement | null>(null);
   const messagesRef = useRef<HTMLDivElement | null>(null);
   const canFetchMore = useRef<boolean>(true);
-  const dispatch = useDispatch<AppDispatch>();
   const [page, setPage] = useState<number>(0);
   const [messages, setMessages] = useState<IMessage[]>();
   const getChatMessages = async (
@@ -38,6 +37,7 @@ const ChatPage = () => {
         canFetchMore.current = !(data?.data?.chats?.length < limit);
         setMessages(msgs);
       }
+      console.log("api loading", apiLoading);
       apiLoading = false;
     }
   };

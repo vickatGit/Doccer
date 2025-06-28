@@ -8,7 +8,7 @@ import {
   PaperAirplaneIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 
@@ -25,6 +25,7 @@ const Input = () => {
   const startStreaming = () => {
     if (!streamInterval.current) {
       streamInterval.current = setInterval(() => {
+        stream;
         setStream(streamRef.current);
       }, 100); // Adjust if needed
     }
@@ -87,7 +88,7 @@ const Input = () => {
       await uploadFile();
     }
     if (chatState.selectedChat) {
-      const res = await getAnswer(
+      await getAnswer(
         chatState.selectedChat?._id?.toString(),
         question,
         onStream,
@@ -98,7 +99,7 @@ const Input = () => {
   const uploadFile = async () => {
     const formData = new FormData();
     formData.append("file", attachement!);
-    const data = await docApi.post(
+    await docApi.post(
       `/api/chat/upload/${(chatState.selectedChat as any)._id}`,
       formData,
       {

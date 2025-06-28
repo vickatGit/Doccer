@@ -1,4 +1,3 @@
-import { setupDocApi } from "@/api";
 import { AppDispatch, RootState } from "@/store";
 import { setSelectedPage } from "@/store/reducers/chat";
 import {
@@ -8,17 +7,14 @@ import {
   FingerPrintIcon,
   HomeIcon,
 } from "@heroicons/react/24/outline";
-import { GoogleLogin } from "@react-oauth/google";
-import axios from "axios";
-import Cookies from "js-cookie";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
 } from "../../../components/ui/sidebar";
-import { useNavigate } from "react-router-dom";
 
 const AppSidebar = () => {
   const userState = useSelector((state: RootState) => state.authReducer);

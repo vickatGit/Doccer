@@ -28,5 +28,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src", "../../../Assignments/AiPlanet/client/src/components/FriendMessage.tsx"]
+  "include": ["src"]
 }

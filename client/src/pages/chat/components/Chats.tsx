@@ -9,7 +9,6 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Chat from "./Chat";
-import DateDivider from "./DateDivider";
 
 const Chats = () => {
   const chatState = useSelector((state: RootState) => state.chatReducer);

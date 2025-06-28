@@ -1,14 +1,12 @@
-import { Button } from "@/components/ui/button";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
-import chatbot from "../../assets/chatbot.png";
-import files from "../../assets/files.png";
-import check from "../../assets/check.png";
+import { setupDocApi } from "@/api";
 import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
-import { setupDocApi } from "@/api";
-import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
+import chatbot from "../../assets/chatbot.png";
+import check from "../../assets/check.png";
+import files from "../../assets/files.png";
 
 const index = () => {
   const navigate = useNavigate();
