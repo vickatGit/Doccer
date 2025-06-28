@@ -1,5 +1,4 @@
 import axios, { AxiosInstance } from "axios";
-import Cookies from "js-cookie";
 const env = import.meta.env.VITE_ENV;
 const devBaseurl = import.meta.env.VITE_DEV_BASE_URL;
 const prodBaseurl = import.meta.env.VITE_PROD_BASE_URL;
@@ -15,7 +14,7 @@ export const setupDocApi = (authToken: string | undefined | null) => {
   });
 };
 
-setupDocApi(Cookies.get("authToken"));
+setupDocApi(localStorage.getItem("authToken"));
 
 export const getUserDetails = async () => {
   const data = await docApi.get("/api/auth/details");
@@ -56,7 +55,7 @@ export const getAnswer = async (
     {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${Cookies.get("authToken")}`,
+        Authorization: `Bearer ${localStorage.getItem("authToken")}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ question }),
