@@ -1,4 +1,5 @@
 import { IMessage } from "@/store/reducers/chat";
+import ReactMarkdown from "react-markdown";
 import React from "react";
 
 type Props = {
@@ -14,7 +15,7 @@ const FriendMessage: React.FC<Props> = ({ msg }) => {
         }`}
       >
         <div
-          className={`rounded-tl-[0.6rem] rounded-tr-[0.6rem] rounded-br-[0.6rem]  bg-primary/20 relative py-1.5 px-5 max-w-[700px] min-w-[5rem] mb-[-0.4rem]`}
+          className={`rounded-tl-[0.9rem] rounded-tr-[0.9rem] rounded-br-[0.9rem]  bg-white font-medium relative py-5 px-5 max-w-[700px] min-w-[5rem] mb-[-0.4rem]`}
         >
           <div className="flex flex-col gap-0.5 items-end italic">
             {/* {message.roomType !== "One-To-One" && (
@@ -34,8 +35,8 @@ const FriendMessage: React.FC<Props> = ({ msg }) => {
                 padding: 0, // Reset padding if needed
               }}
             >
-              {msg?.msg}
-              {/* <ReactMarkdown>{message.msg}</ReactMarkdown> */}
+              {/* {msg?.msg} */}
+              <ReactMarkdown>{msg?.msg}</ReactMarkdown>
             </pre>
           </div>
           {/* <div className="flex">

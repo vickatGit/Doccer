@@ -7,6 +7,8 @@ export interface IChat {
   lastMessage: string;
   lastAnswer: string;
   userId: string;
+  updatedAt: string;
+  createdAt: string;
 }
 export interface IMessage {
   _id: string;

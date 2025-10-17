@@ -60,7 +60,7 @@ const index = () => {
       }
     >
       <AppSidebar />
-      <main className="flex w-full h-screen">
+      <main className="flex w-full h-screen overflow-scroll bg-gradient-to-b from-[#EBE5F0] to-[#E7E7E7]  ">
         <Chats />
         {chatState.selectedChat && <ChatPage />}
       </main>

@@ -82,10 +82,10 @@ const index = () => {
             </div>
           </div>
         </div>
-        <p className="text-5xl font-medium text-center leading-[4rem] mt-20">
+        <p className="text-5xl font-medium text-center leading-[4rem] mt-20 text-white">
           Because Reading the Whole Document Is Overrated
         </p>
-        <p className="text-md text-primary font-medium text-center mt-5">
+        <p className="text-md font-medium text-center mt-5 text-[#d5cedc]">
           Skip the hassle of skimming.
           <br /> Upload,ask, and move on like a boss.
         </p>
@@ -95,9 +95,7 @@ const index = () => {
           className="
         bg-white px-8 py-2.5 rounded-full mt-20 cursor-pointer shadow-2xl"
         >
-          <p className="text-secondary text-[0.9rem] font-medium">
-            Get Started
-          </p>
+          <p className="text-[0.9rem] font-medium text-black">Get Started</p>
         </div>
       </div>
     </div>

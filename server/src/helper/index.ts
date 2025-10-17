@@ -1,11 +1,18 @@
 import Pdf from "pdf-parse";
-import { CohereClient } from "cohere-ai";
+import { CohereClientV2 } from "cohere-ai";
 import { Pinecone } from "@pinecone-database/pinecone";
-import { GenerateStreamedResponse } from "cohere-ai/api";
+import {
+  EmbedByTypeResponse,
+  GenerateStreamedResponse,
+  V2ChatStreamResponse,
+} from "cohere-ai/api";
 import { Stream } from "cohere-ai/core";
-const aiClient = new CohereClient({
+const aiClient = new CohereClientV2({
   token: process.env.COHERE_API_KEY,
 });
+import { Response } from "express";
+import Message from "../model/Message";
+import Chat from "../model/Chat";
 export function separateFileNameAndExtension(filePath: string): {
   fileName: string;
   extension: string;
@@ -90,34 +97,48 @@ export const convertPdfToVector = async (
 export const getAnswer = async (
   question: string,
   chatId: string
-): Promise<Stream<GenerateStreamedResponse>> => {
+): Promise<Stream<V2ChatStreamResponse>> => {
   let queryEmb = await aiClient.embed({
     texts: [question],
     model: "embed-english-v3.0",
     inputType: "search_query",
   });
-  const queryVector = (queryEmb = queryEmb.embeddings[0]);
-  const vectorDb = getVectorDb();
-  const vectorChunks = await vectorDb.query({
-    topK: 5,
-    vector: queryVector,
-    includeMetadata: true,
-    filter: {
-      fileId: chatId,
-    },
-  });
+  try {
+    const queryVector = queryEmb.embeddings.float[0];
+    const vectorDb = getVectorDb();
+    const vectorChunks = await vectorDb.query({
+      topK: 5,
 
-  const textChunks = vectorChunks.matches.map((chunk) => chunk?.metadata?.text);
-  const context = textChunks.join(" ");
-  const res = await aiClient.generateStream({
-    model: "command-r-plus",
-    prompt: `You are an assistant for question-answering tasks. Use the following pieces of retrieved context to answer the question. If you don't know the answer, just say that you don't know. Use three sentences maximum and keep the answer concise.
-              Question: {${question}} 
-              Context: {${context}} 
-              Answer:`,
-    temperature: 0.3,
-    maxTokens: 300,
-  });
+      vector: queryVector,
+      includeMetadata: true,
+      filter: {
+        fileId: chatId,
+      },
+    });
 
-  return res;
+    const textChunks = vectorChunks.matches.map(
+      (chunk) => chunk?.metadata?.text
+    );
+    const context = textChunks.join(" ");
+    const res = await aiClient.chatStream({
+      model: "command-a-03-2025",
+      messages: [
+        {
+          role: "system",
+          content: "You are an assistant for question-answering tasks.",
+        },
+        {
+          role: "user",
+          content: `Use the following context to answer briefly format. 
+                              Question: ${question}
+                              Context: ${context}`,
+        },
+      ],
+      temperature: 0.3,
+    });
+
+    return res;
+  } catch (error) {
+    console.log("error : ", error);
+  }
 };

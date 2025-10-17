@@ -83,6 +83,7 @@ const Input = () => {
     setQuestion("");
   };
   const submitQuestion = async () => {
+    console.log("updating");
     updateChats(question, "...", "question");
     if (attachement) {
       await uploadFile();
@@ -127,7 +128,7 @@ const Input = () => {
 
   return (
     <div className="h-fit  pb-11 shrink-0 px-28 bg-transparent">
-      <div className="relative flex flex-col flex-1 py-4  border-[0.1rem] rounded-[0.55rem] mt-4">
+      <div className="relative flex flex-col flex-1 py-2  border-[0.1rem] rounded-[2.5rem] mt-4 bg-[#E5E5E5]">
         {attachement && (
           <div className="relative w-[30%]  h-12 bg-secondary mx-5 mb-3 rounded-md flex gap-2 items-center px-2">
             <div className="w-8 h-8 rounded-md bg-[#FF3001] p-1.5">
@@ -182,22 +183,31 @@ const Input = () => {
               }
             }}
             value={question}
-            placeholder={`Send a message...`}
+            placeholder={`Ask me anything...`}
             onChange={(e) => setQuestion(e.target.value)}
           />
           <div
-            className={`${
-              doesFileExist ? "cursor-pointer" : "cursor-not-allowed"
-            } flex-shrink-0 w-5 h-5 ${
+            className={`bg-white w-10 h-10 flex justify-center items-center rounded-full
+             ${
+               doesFileExist ? "cursor-pointer" : "cursor-not-allowed"
+             } flex-shrink-0 w-5 h-5 ${
               doesFileExist ? "text-primary" : "text-primary/30"
-            } `}
-            onClick={() => {
-              {
-                doesFileExist && submitQuestion();
-              }
-            }}
+            }`}
           >
-            <PaperAirplaneIcon />
+            <div
+              className={`bg-white ${
+                true ? "cursor-pointer" : "cursor-not-allowed"
+              } flex-shrink-0 w-5 h-5 ${
+                true ? "text-primary" : "text-primary/30"
+              } `}
+              onClick={() => {
+                {
+                  true && submitQuestion();
+                }
+              }}
+            >
+              <PaperAirplaneIcon />
+            </div>
           </div>
         </div>
       </div>
