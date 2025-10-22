@@ -39,9 +39,9 @@ const AppSidebar = () => {
           <HomeIcon />
         </div>
         <div
-          className={`mx-2 p-[0.55rem] rounded-md ${
+          className={`mx-2 p-[0.55rem] rounded-md  ${
             chatState.selectedPage === "Settings" && "bg-primary/10"
-          } hover:bg-primary/10`}
+          } hover:bg-primary/10 hover:cursor-not-allowed`}
           onClick={() => {
             dispatch(setSelectedPage("Settings"));
           }}
@@ -51,7 +51,7 @@ const AppSidebar = () => {
         <div
           className={`mx-2 p-[0.55rem] rounded-md ${
             chatState.selectedPage === "Saved" && "bg-primary/10"
-          } hover:bg-primary/10`}
+          } hover:bg-primary/10 hover:cursor-not-allowed`}
           onClick={() => {
             dispatch(setSelectedPage("Saved"));
           }}

@@ -3,11 +3,12 @@ import { ref } from "process";
 
 const ChatSchema = new mongoose.Schema(
   {
-    file: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "File",
-      required: false,
-    },
+    files: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "File",
+      },
+    ],
     name: {
       type: String,
       default: "New Chat",

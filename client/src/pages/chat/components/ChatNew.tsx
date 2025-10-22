@@ -1,47 +1,86 @@
-import React from "react";
-import placeholder from "../../../assets/image-placeholder.png";
-import { Document, Page, pdfjs } from "react-pdf";
-import PdfThumb from "./PdfThumb";
-import { IChat, setSelectedChat } from "@/store/reducers/chat";
-import { formatDateWithLabels } from "@/helpers";
-import { useDispatch } from "react-redux";
+import star from "@/assets/stars.png";
+import {
+  extractFirstFiveLinesFromS3,
+  formatDateWithLabels,
+  getFileExtenstion,
+  getFileLogo,
+} from "@/helpers";
 import { AppDispatch } from "@/store";
+import { IChat, setSelectedChat } from "@/store/reducers/chat";
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import placeholder from "../../../assets/image-placeholder.png";
+import FileCard from "./FileCard";
 
 type Props = {
   chat: IChat;
 };
 const ChatNew: React.FC<Props> = ({ chat }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const [files, setFiles] = useState<any[]>();
+
+  useEffect(() => {
+    const processFiles = async () => {
+      if (!chat.files || chat.files.length === 0) return;
+      const files = [];
+      for (const file of chat.files) {
+        try {
+          const firstFiveLines = (
+            await extractFirstFiveLinesFromS3(file.url)
+          ).join(" ");
+          const info = {
+            name: file.name,
+            logo: getFileLogo(getFileExtenstion(file.name)),
+            firstFiveLines,
+          };
+          files.push(info);
+          console.log("File Info:", info);
+        } catch (err) {
+          console.error("Error processing file:", file.name, err);
+        }
+      }
+      setFiles(files);
+    };
+
+    processFiles();
+  }, [chat]);
+
   return (
     <div
-      className={`rounded-3xl w-full overflow-hidden  mt-2 bg-gradient-to-b from-[#D3C9DC] via-[#D3C9DC] to-[#C4DCAB]  `}
+      // className={`rounded-3xl w-full overflow-hidden  mt-2  bg-gradient-to-b from-[#E4E4E4] via-[#E4E4E4] to-[#c3dca8]  `}
+      className={`rounded-3xl  w-full overflow-hidden  mt-4 border border-white/20
+               bg-white/30 backdrop-blur-lg shadow-[0_4px_30px_rgba(0,0,0,0.05)]`}
+      // className={`rounded-3xl w-full overflow-hidden  mt-2  `}
     >
-      <div className="flex justify-between p-3 items-center ">
+      <div className="flex justify-between p-3 items-center">
         <div className="flex">
           <div className="w-8 h-8 rounded-full p-2 bg-[#EEEBF1]">
-            <img src={placeholder} />
+            <img src={star}></img>
           </div>
           <div className="flex flex-col ml-2">
             <p className="text-[0.75rem] font-medium w-full break-all text-ellipsis line-clamp-1">
-              {chat.file?.name || "Ai Search"}
+              {chat.name || "Ai Search"}
             </p>
             <div className="flex text-[#5D5661] text-[0.6rem] font-medium items-center gap-2">
-              {formatDateWithLabels(new Date(Date.parse(chat.updatedAt)))}
-              <p>Today</p>
-              {chat?.createdAt && (
-                <div className="w-[0.3rem] h-[0.3rem] h-1 rounded-full bg-[#5D5661]"></div>
-              )}
-
-              <p>
-                {chat?.createdAt
-                  ? formatDateWithLabels(new Date(Date.parse(chat?.createdAt)))
-                  : ""}
-              </p>
+              {(() => {
+                const { day, dateString } = formatDateWithLabels(
+                  new Date(Date.parse(chat.updatedAt))
+                );
+                return (
+                  <>
+                    {day && <p>{day}</p>}
+                    {day && (
+                      <div className="w-[0.3rem] h-[0.3rem] h-1 rounded-full bg-[#5D5661]"></div>
+                    )}
+                    <p>{dateString}</p>
+                  </>
+                );
+              })()}
             </div>
           </div>
         </div>
         <div
-          className="w-8 h-8 rounded-full p-2 bg-[#EEEBF1] cursor-pointer flex justify-center items-center"
+          className="w-8 h-8 rounded-full p-2 bg-[#EEEBF1] hover:bg-primary/10 cursor-pointer flex justify-center items-center"
           onClick={() => {
             if (chat._id?.trim()) {
               dispatch(setSelectedChat(chat));
@@ -54,7 +93,7 @@ const ChatNew: React.FC<Props> = ({ chat }) => {
             viewBox="0 0 24 24"
             stroke-width="3"
             stroke="currentColor"
-            className="size-3"
+            className="size-3 "
           >
             <path
               stroke-linecap="round"
@@ -64,26 +103,50 @@ const ChatNew: React.FC<Props> = ({ chat }) => {
           </svg>
         </div>
       </div>
-      <div
-        className={`relative rounded-2xl overflow-hidden mx-1 ${
-          chat.file?.url ? "h-45" : "h-fit"
-        }`}
-      >
-        {chat?.file?.url && <PdfThumb fileUrl={chat.file.url} />}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent   to-[#C4DCAB]   "></div>
-        <div className="absolute bottom-1 flex items-center  left-2 right-2  bg-[#DDEACF] h-12  rounded-3xl">
-          <div className="w-8 h-8 shrink-0 rounded-full p-2 ml-2 ">
-            <img src={placeholder} />
-          </div>
-          <div className="flex flex-col ml-2">
-            <p className="text-[0.75rem] font-medium">{chat.lastMessage}</p>
-            <div className="flex text-[#5D5661] text-[0.6rem] font-medium items-center gap-2 mr-2.5 ">
-              <p className="break-all text-ellipsis line-clamp-1">
-                {chat?.lastAnswer}
-              </p>
+      <hr></hr>
+      <div className={`relative rounded-2xl overflow-hidden mx-1 h-fit`}>
+        <div
+          className={`flex gap-2 px-6  ${
+            !files || files?.length === 0 ? "h-fit" : "h-55 mt-3"
+          }`}
+        >
+          {files?.slice(0, 3)?.map((file, index) => {
+            return (
+              <div
+                key={file.name}
+                className="relative transition-transform duration-300"
+                style={{
+                  transform: `translateX(-${index * 40}px) rotate(${
+                    index % 2 === 0 ? -4 : 4
+                  }deg)`,
+                  zIndex: index,
+                }}
+              >
+                <FileCard
+                  firstFiveLines={file.firstFiveLines}
+                  logo={file.logo}
+                  name={file.name}
+                  showFade={false}
+                />
+              </div>
+            );
+          })}
+        </div>
+        {chat.lastMessage && (
+          <div className="bottom-1 flex items-center z-30 mt-2 mb-1 left-1 right-1 h-fit py-1  rounded-3xl border border-white">
+            <div className="w-8 h-8 shrink-0 rounded-full p-2 ml-2 bg-[#EEEBF1] z-10 ">
+              <img src={star} />
+            </div>
+            <div className="flex flex-col ml-2">
+              <p className="text-[0.75rem] font-medium">{chat.lastMessage}</p>
+              <div className="flex text-[#5D5661] text-[0.6rem] font-medium items-center gap-2 mr-2.5 ">
+                <p className="break-all text-ellipsis line-clamp-1">
+                  {chat?.lastAnswer}
+                </p>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

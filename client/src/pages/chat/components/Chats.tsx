@@ -8,6 +8,9 @@ import {
 import ChatNew from "./ChatNew";
 import { useChatList } from "../hooks/useChatsList";
 import { createChat } from "@/api";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/store";
+import { setSelectedChat } from "@/store/reducers/chat";
 
 const Chats: React.FC = () => {
   const {
@@ -21,6 +24,7 @@ const Chats: React.FC = () => {
     setChats,
   } = useChatList({ initialLimit: 10 });
 
+  const dispatch = useDispatch<AppDispatch>();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const thresholdPx = 200; // start loading older chats when within 200px of bottom
 
@@ -43,9 +47,11 @@ const Chats: React.FC = () => {
 
   const onCreateChat = async () => {
     try {
-      const created = await createChat(); // server returns new chat
+      const created: any = await createChat(); // server returns new chat
       // prepend it locally
-      setChats((prev: any) => [created, ...prev]);
+      const allChats = [created.data.chat, ...(chats || [])];
+      dispatch(setChats(allChats));
+      dispatch(setSelectedChat(created.data.chat));
       // optionally refresh to get server data
       // refresh();
     } catch (err) {
@@ -54,16 +60,28 @@ const Chats: React.FC = () => {
   };
 
   return (
-    <div className="w-[27%] h-screen relative bg-sidebar -ml-1 shrink-0">
-      <div className="absolute inset-0 bg-gradient-to-b from-[#EBE5F0] to-[#E7E7E7]"></div>
+    <div className="w-[27%] h-screen relative bg-sidebar shrink-0">
+      {/* <div className="absolute inset-0 bg-gradient-to-b from-[#EBE5F0] to-[#E7E7E7]"></div> */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#ECE5F3] via-[#EEEDE4] to-[#EDDEE3]"></div>
 
-      <div className="w-full flex flex-col h-screen bg-transparent absolute pt-4 px-2">
-        <div>
+      <div className="w-full flex flex-col h-screen bg-transparent absolute pt-4 ">
+        <div
+          className="px-4 z-100 absolute top-0 left-0 right-0 pb-10 pt-8
+             backdrop-blur-lg
+             bg-gradient-to-b from-white/20 via-white/10 to-transparent
+             shadow-[0_4px_30px_rgba(0,0,0,0.1)]"
+          style={{
+            WebkitMaskImage:
+              "linear-gradient(to bottom, black 0%, black 85%, transparent 100%)",
+            maskImage:
+              "linear-gradient(to bottom, black 0%, black 85%, transparent 100%)",
+          }}
+        >
           <div className="flex w-full justify-between items-center">
             <p className="text-2xl font-medium">Chats</p>
             <div
               role="button"
-              className="w-8 h-8 p-2 border rounded-md hover:bg-primary/10 cursor-pointer"
+              className="w-8 h-8 p-2 border rounded-md bg-white hover:bg-primary/10 cursor-pointer"
               onClick={onCreateChat}
             >
               <PlusIcon />
@@ -80,17 +98,21 @@ const Chats: React.FC = () => {
               placeholder="Search chats..."
               className="border-transparent focus:border-transparent outline-none text-xs flex-1 bg-transparent resize-none"
             />
-            <div className="h-4 w-4">
+            {/* <div className="h-4 w-4">
               <AdjustmentsHorizontalIcon />
-            </div>
+            </div> */}
           </div>
         </div>
 
-        <div className="flex-1 overflow-auto mt-5" ref={containerRef}>
+        <div
+          className="flex-1 overflow-auto mt-5 pt-30 mx-4 "
+          ref={containerRef}
+        >
           {/* chat list sorted by updatedAt descending should already be from server */}
-          {chats.length === 0 && !isLoading ? (
+          {chats && Array.isArray(chats) && chats.length === 0 && !isLoading ? (
             <div className="p-4 text-sm text-muted">No chats yet</div>
           ) : (
+            Array.isArray(chats) &&
             chats.map((chat: any) => <ChatNew chat={chat} key={chat._id} />)
           )}
 

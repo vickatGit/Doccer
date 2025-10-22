@@ -92,12 +92,7 @@ export const getMessages = async (
   return data; // { messages, nextCursor, hasMore }
 };
 
-export const getAnswer = async (
-  chatId: string,
-  question: string,
-  onChunk: (chunk: string) => void,
-  onDone: (isDone: boolean) => void
-) => {
+export const getAnswer = async (chatId: string, question: string) => {
   const res = await fetch(
     `${
       env === "dev" ? devBaseurl : prodBaseurl
@@ -112,26 +107,4 @@ export const getAnswer = async (
       body: JSON.stringify({ question }),
     }
   );
-  if (!res.ok || !res.body) {
-    throw new Error("Stream failed");
-  }
-  const stream = res.body.pipeThrough(new TextDecoderStream());
-  const reader = stream.getReader();
-  let isDone = false;
-  while (!isDone) {
-    const { value, done } = await reader.read();
-    if (done) break;
-    if (value) {
-      const lines = value
-        .split("\n")
-        .filter((line) => line.startsWith("data: "))
-        .map((line) => line.replace("data: ", "").trim());
-
-      for (const line of lines) {
-        if (line) onChunk(line);
-      }
-    }
-    isDone = done;
-  }
-  onDone(true);
 };

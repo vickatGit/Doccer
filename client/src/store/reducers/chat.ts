@@ -1,9 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+export interface IFile {
+  _id: string | null; // unique identifier
+  url: string; // file URL
+  key: string; // S3 key or identifier
+  size: number; // file size in bytes
+  name: string; // file name
+}
+
 export interface IChat {
   _id: string;
   name: string;
-  file: any;
+  files: IFile[] | null;
   lastMessage: string;
   lastAnswer: string;
   userId: string;
