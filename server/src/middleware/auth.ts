@@ -36,7 +36,7 @@ export const verify = (
       return;
     }
   } catch (error) {
-    res.status(400).send({
+    res.status(404).send({
       message: "Login Failed",
       error: error?.toString(),
     });

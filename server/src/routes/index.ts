@@ -1,25 +1,10 @@
-import { Router, Request, Response, NextFunction } from "express";
-import multer from "multer";
+import { Router } from "express";
+import ablyRoutes from "./ably";
 import authRoutes from "./auth";
 import chatRoutes from "./chat";
 const router = Router();
 
 router.use("/auth", authRoutes);
 router.use("/chat", chatRoutes);
+router.use("/ably", ablyRoutes);
 export default router;
-
-// const bufferStorage = multer.memoryStorage();
-// const uploader = multer({ storage: bufferStorage });
-// router.post(
-//   "/upload",
-//   uploader.single("file"),
-//   (req: Request, res: Response) => {
-//     const file = req.file
-//     if(!file){
-//       res.status(404).send({
-//         message:"File Not Received"
-//       })
-//     }
-
-//   }
-// );

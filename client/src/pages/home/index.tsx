@@ -37,7 +37,7 @@ const index = () => {
     <div className="absolute flex justify-center inset-0 z-10 h-full w-full items-center px-5 py-24 [background:radial-gradient(145%_135%_at_50%_10%,#000_30%,#7D50DC_50%,#E5DCFA_70%)] ">
       <div className="absolute top-5 right-5 flex gap-2">
         {/* Login */}
-        <div
+        {/* <div
           onClick={() => login()}
           className="
       bg-primary px-5 py-1 rounded-full cursor-pointer shadow-2xl
@@ -47,7 +47,7 @@ const index = () => {
     "
         >
           <p className="text-secondary text-[0.7rem] font-bold">Login</p>
-        </div>
+        </div> */}
 
         {/* Signup */}
         <div
@@ -57,8 +57,9 @@ const index = () => {
       hover:border-[#613EAB] 
       transition
     "
+          onClick={() => login()}
         >
-          <p className="text-primary text-[0.7rem] font-bold">Signup</p>
+          <p className="text-primary text-[0.7rem] font-bold">Login</p>
         </div>
       </div>
 
@@ -82,10 +83,10 @@ const index = () => {
             </div>
           </div>
         </div>
-        <p className="text-5xl font-medium text-center leading-[4rem] mt-20">
+        <p className="text-5xl font-medium text-center leading-[4rem] mt-20 text-white">
           Because Reading the Whole Document Is Overrated
         </p>
-        <p className="text-md text-primary font-medium text-center mt-5">
+        <p className="text-md font-medium text-center mt-5 text-[#d5cedc]">
           Skip the hassle of skimming.
           <br /> Upload,ask, and move on like a boss.
         </p>
@@ -95,9 +96,7 @@ const index = () => {
           className="
         bg-white px-8 py-2.5 rounded-full mt-20 cursor-pointer shadow-2xl"
         >
-          <p className="text-secondary text-[0.9rem] font-medium">
-            Get Started
-          </p>
+          <p className="text-[0.9rem] font-medium text-black">Get Started</p>
         </div>
       </div>
     </div>

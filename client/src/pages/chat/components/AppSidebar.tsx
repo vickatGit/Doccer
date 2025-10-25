@@ -39,9 +39,9 @@ const AppSidebar = () => {
           <HomeIcon />
         </div>
         <div
-          className={`mx-2 p-[0.55rem] rounded-md ${
+          className={`mx-2 p-[0.55rem] rounded-md  ${
             chatState.selectedPage === "Settings" && "bg-primary/10"
-          } hover:bg-primary/10`}
+          } hover:bg-primary/10 hover:cursor-not-allowed`}
           onClick={() => {
             dispatch(setSelectedPage("Settings"));
           }}
@@ -51,7 +51,7 @@ const AppSidebar = () => {
         <div
           className={`mx-2 p-[0.55rem] rounded-md ${
             chatState.selectedPage === "Saved" && "bg-primary/10"
-          } hover:bg-primary/10`}
+          } hover:bg-primary/10 hover:cursor-not-allowed`}
           onClick={() => {
             dispatch(setSelectedPage("Saved"));
           }}
@@ -62,11 +62,11 @@ const AppSidebar = () => {
       <SidebarFooter>
         {userState.user && (
           <div className="flex flex-col gap-3 justify-center">
-            <div className="w-8 h-8 bg-white rounded-full overflow-hidden">
-              <img src={userState.user?.img} className="object-cover" />
+            <div className="w-8 h-8 bg-black rounded-full overflow-hidden ">
+              {/* <img src={userState.user?.img} className="object-cover" /> */}
             </div>
             <div
-              className="p-[0.55rem] rounded-md hover:bg-primary/10"
+              className="p-[0.55rem] rounded-md hover:bg-primary/10 cursor-pointer"
               onClick={() => {
                 localStorage.removeItem("authToken");
                 navigate("/");
