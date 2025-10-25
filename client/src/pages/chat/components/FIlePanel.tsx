@@ -78,7 +78,7 @@ const FilePanel: React.FC<Props> = (props) => {
               <FileCard
                 showFade={true}
                 name={file.name}
-                logo={csvIcon}
+                logo={file.logo}
                 firstFiveLines={file.firstFiveLines}
               />
             ))}

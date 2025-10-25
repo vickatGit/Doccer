@@ -37,7 +37,7 @@ const index = () => {
     <div className="absolute flex justify-center inset-0 z-10 h-full w-full items-center px-5 py-24 [background:radial-gradient(145%_135%_at_50%_10%,#000_30%,#7D50DC_50%,#E5DCFA_70%)] ">
       <div className="absolute top-5 right-5 flex gap-2">
         {/* Login */}
-        <div
+        {/* <div
           onClick={() => login()}
           className="
       bg-primary px-5 py-1 rounded-full cursor-pointer shadow-2xl
@@ -47,7 +47,7 @@ const index = () => {
     "
         >
           <p className="text-secondary text-[0.7rem] font-bold">Login</p>
-        </div>
+        </div> */}
 
         {/* Signup */}
         <div
@@ -57,8 +57,9 @@ const index = () => {
       hover:border-[#613EAB] 
       transition
     "
+          onClick={() => login()}
         >
-          <p className="text-primary text-[0.7rem] font-bold">Signup</p>
+          <p className="text-primary text-[0.7rem] font-bold">Login</p>
         </div>
       </div>
 

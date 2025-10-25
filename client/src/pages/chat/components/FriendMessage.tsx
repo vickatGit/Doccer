@@ -10,7 +10,7 @@ const FriendMessage: React.FC<Props> = ({ msg }) => {
   const isHighlighted = false;
   return (
     <div>
-      <div className=" flex mt-15 gap-2">
+      <div className=" flex mt-10 gap-2">
         <div className="overflow-hidden rounded-full h-12 w-12 mt-4 shrink-0">
           <img src={aiAvatar} className="h-full w-full object-cover"></img>
         </div>

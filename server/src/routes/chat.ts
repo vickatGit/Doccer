@@ -257,10 +257,6 @@ router.post("/message/ask/:chatId", async (req: AuthRequest, res: any) => {
           } catch (err) {
             console.error("publishResponseDone err:", err);
           }
-
-          // If you're using SSE or long-polling you may end the response here; but keep consistent with your setup:
-          // res.write("event: done\ndata: end\n\n");
-          // res.end();
           break;
 
         default:

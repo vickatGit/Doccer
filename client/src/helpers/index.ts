@@ -31,8 +31,7 @@ export const getFileSizeMB = (size: number): number => {
   return size / 1024 / 1024;
 };
 export const formatDateWithLabels = (
-  date: Date,
-  addDay: boolean = true
+  date: Date
 ): { day: string; dateString: string } => {
   const now = new Date();
 

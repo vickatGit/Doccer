@@ -13,31 +13,151 @@ import UserMessage from "./UserMessage";
 import star from "@/assets/stars.png";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import FilePanel from "./FIlePanel";
+import { docApi } from "@/api";
+import { checkType, getFileSizeMB, maxSize, rerieveFileInfos } from "@/helpers";
+import FileUpload from "./FileUpload";
+import { useNavigate } from "react-router-dom";
 
 const ChatPage = () => {
+  const navigate = useNavigate();
   const chatState = useSelector((state: RootState) => state.chatReducer);
+  const authState = useSelector((state: RootState) => state.authReducer);
   const dispatch = useDispatch<AppDispatch>();
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const isUserNearBottomRef = useRef(true);
   const messagesRef = useRef<HTMLDivElement | null>(null);
-
   const [responseStream, setResponseStream] = useState<string | null>("");
-
   const { messages, isLoading, hasMore, loadOlderMessages, addMessage } =
     useChatPagination(chatState.selectedChat?._id!);
-
+  const [open, setOpen] = useState(false);
   const chatStateRef = useRef(chatState);
+
+  const [attachements, setAttachments] = useState<File[] | null>();
+  const [fileInfos, setFileInfos] = useState<any[] | null>();
+  const doesFileExist =
+    open || (chatState.selectedChat?.files?.length || 0) <= 0;
+
+  useEffect(() => {
+    console.log(
+      "open changed : ",
+      open,
+      open || (chatState.selectedChat?.files?.length || 0) <= 0
+    );
+  }, [open]);
+
+  const fetchFileInfos = async () => {
+    if (!attachements || attachements.length === 0) return;
+
+    const infos = await Promise.all(
+      Array.from(attachements).map((file: File) => rerieveFileInfos(file))
+    );
+
+    console.log("All file infos:", infos);
+    // You can set state here if you want to store all file info
+    setFileInfos(infos);
+  };
+  useEffect(() => {
+    fetchFileInfos();
+  }, [attachements]);
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("handleFileChange triggered");
+    const files = e.target.files;
+
+    if (!files || files.length === 0) {
+      console.log("No files selected");
+      return;
+    }
+
+    console.log(`Total files selected: ${files.length}`);
+    const validFiles: File[] = [];
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      console.log(
+        `\nProcessing file ${i + 1} of ${files.length}: ${file.name}`
+      );
+      console.log(`- File size: ${file.size} bytes`);
+      console.log(`- File type: ${file.type}`);
+
+      // Check type
+      if (!checkType(file)) {
+        console.log(`❌ ${file.name} failed type validation`);
+        continue;
+      } else {
+        console.log(`✅ ${file.name} passed type validation`);
+      }
+
+      // Check size
+      if (maxSize && getFileSizeMB(file.size) > maxSize) {
+        console.log(
+          `❌ ${file.name} failed size validation (${getFileSizeMB(
+            file.size
+          ).toFixed(2)} MB)`
+        );
+        continue;
+      } else if (maxSize) {
+        console.log(
+          `✅ ${file.name} passed size validation (${getFileSizeMB(
+            file.size
+          ).toFixed(2)} MB)`
+        );
+      }
+
+      validFiles.push(file);
+      console.log(`➡️ ${file.name} added to validFiles`);
+    }
+
+    if (validFiles.length === 0) {
+      console.log("No valid files to upload");
+    } else {
+      console.log(`Total valid files: ${validFiles.length}`);
+      validFiles.forEach((f, idx) => console.log(`- ${idx + 1}: ${f.name}`));
+      setAttachments(validFiles);
+    }
+
+    // Clear input AFTER processing
+    e.target.value = "";
+    console.log("File input cleared");
+  };
+
+  const uploadFile = async () => {
+    if (!attachements || attachements.length === 0) {
+      console.log("No files to upload");
+      return;
+    }
+
+    const formData = new FormData();
+
+    // Append each file individually
+    attachements?.forEach((file) => {
+      formData.append("files", file); // use "files" if backend expects multiple
+      console.log(`Appending file: ${file.name}`);
+    });
+
+    try {
+      await docApi.post(
+        `/api/chat/upload/${(chatState.selectedChat as any)._id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      console.log("Files uploaded successfully");
+      setFileInfos(null);
+      setAttachments(null);
+      navigate(0);
+    } catch (error) {
+      console.error("Error uploading files:", error);
+    }
+  };
+
   useEffect(() => {
     chatStateRef.current = chatState;
   }, [chatState]);
-
-  // const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-  //   const top = e.currentTarget.scrollTop;
-
-  //   if (top === 0 && hasMore && !isLoading) {
-  //     loadOlderMessages();
-  //   }
-  // };
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const el = e.currentTarget;
@@ -184,62 +304,66 @@ const ChatPage = () => {
                 ></img>
               </div>
               <div className="flex flex-col">
-                <p className="text-xl">Hi, Vikas!</p>
-                <p className="font-bold text-2xl">How Can I Help You ?</p>
+                <p className="text-xl">Hi, {authState.user?.name}!</p>
+                <p className="font-bold text-2xl">{`${
+                  chatState.selectedChat?.files?.length || 0 > 0
+                    ? "How Can I Help You ?"
+                    : "Upload File to Start the Chat"
+                } `}</p>
               </div>
               <div className="flex-1"> </div>
-              {/* <div className="w-[30%]  h-16  flex items-center justify-end mt-2 ">
-                {attachement && (
-                  <div className="relative w-full h-12 bg-secondary mx-5 mb-3 rounded-md flex gap-2 items-center px-2">
-                    <div className="w-8 h-8 rounded-md bg-accent-purple  p-1.5">
-                      <DocumentIcon />
-                    </div>
-                    <div className="flex flex-col   w-full overflow-hidden">
-                      <p className="text-[0.8rem] break-all text-ellipsis line-clamp-1">
-                        {attachement.name}
-                      </p>
-                      <p className="text-[0.6rem]">PDF</p>
-                    </div>
-                    <div
-                      className="absolute h-3 w-3 rounded-full bg-red-400 p-[0.1rem] -top-1 -right-1 overflow-hidden cursor-pointer"
-                      onClick={() => {
-                        // setAttachment(null);
-                      }}
-                    >
-                      <XMarkIcon />
-                    </div>
-                  </div>
-                )}
-              </div> */}
             </div>
           </div>
         </div>
-        <div className="flex w-full h-full gap-10 cursor-pointer">
-          <div
-            className="w-full h-full px-5 overflow-y-scroll flex-1 pb-40 pt-80"
-            ref={messagesRef}
-            onScroll={handleScroll}
-          >
-            {messages?.map((msg) =>
-              msg.type === "question" ? (
-                <UserMessage msg={msg} key={msg?._id} />
-              ) : (
-                <FriendMessage msg={msg} key={msg?._id} />
-              )
-            )}
-            {responseStream != null && responseStream != "" && (
-              <StreamMessage msg={responseStream} key={"response-stream"} />
-            )}
-            <div ref={bottomRef} key={"tracker"} />
+        {doesFileExist && (
+          <div className="flex items-center justify-center absolute w-[97%] h-[97%]">
+            <div className="w-[25rem] h-[20rem] flex items-center justify-center">
+              <FileUpload
+                onFileChange={handleFileChange}
+                fileInfos={fileInfos}
+                uploadFile={uploadFile}
+                setOpen={setOpen}
+              />
+            </div>
           </div>
-          {!chatState.selectedChat?.files ||
-            (chatState.selectedChat?.files?.length !== 0 && (
-              <div className="flex flex-col justify-center">
-                <FilePanel files={chatState.selectedChat?.files} />
-              </div>
-            ))}
-        </div>
-        <Input />
+        )}
+        {!doesFileExist && (
+          <div className="flex w-full h-full gap-10 cursor-pointer">
+            <div
+              className="w-full h-full px-5 overflow-y-scroll flex-1 pb-40 pt-80"
+              ref={messagesRef}
+              onScroll={handleScroll}
+            >
+              {messages?.map((msg) =>
+                msg.type === "question" ? (
+                  <UserMessage msg={msg} key={msg?._id} />
+                ) : (
+                  <FriendMessage msg={msg} key={msg?._id} />
+                )
+              )}
+              {responseStream != null && responseStream != "" && (
+                <StreamMessage msg={responseStream} key={"response-stream"} />
+              )}
+              <div ref={bottomRef} key={"tracker"} />
+            </div>
+            {!chatState.selectedChat?.files ||
+              (chatState.selectedChat?.files?.length !== 0 && (
+                <div className="flex flex-col justify-center">
+                  <FilePanel files={chatState.selectedChat?.files} />
+                </div>
+              ))}
+          </div>
+        )}
+        {!doesFileExist && (
+          <Input
+            attachements={attachements}
+            fileInfos={fileInfos}
+            setFileInfos={setFileInfos}
+            handleFileChange={handleFileChange}
+            uploadFile={uploadFile}
+            setOpen={setOpen}
+          />
+        )}
       </div>
     </div>
   );
