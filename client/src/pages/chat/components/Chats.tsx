@@ -1,28 +1,16 @@
 // src/components/Chats.tsx
-import React, { useEffect, useRef } from "react";
-import {
-  PlusIcon,
-  MagnifyingGlassIcon,
-  AdjustmentsHorizontalIcon,
-} from "@heroicons/react/24/outline";
-import ChatNew from "./ChatNew";
-import { useChatList } from "../hooks/useChatsList";
 import { createChat } from "@/api";
-import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/store";
 import { setSelectedChat } from "@/store/reducers/chat";
+import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/outline";
+import React, { useEffect, useRef } from "react";
+import { useDispatch } from "react-redux";
+import { useChatList } from "../hooks/useChatsList";
+import ChatNew from "./ChatNew";
 
 const Chats: React.FC = () => {
-  const {
-    chats,
-    isLoading,
-    hasMore,
-    loadMore,
-    setSearch,
-    search,
-    refresh,
-    setChats,
-  } = useChatList({ initialLimit: 10 });
+  const { chats, isLoading, hasMore, loadMore, setSearch, search, setChats } =
+    useChatList({ initialLimit: 10 });
 
   const dispatch = useDispatch<AppDispatch>();
   const containerRef = useRef<HTMLDivElement | null>(null);

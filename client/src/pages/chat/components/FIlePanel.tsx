@@ -1,14 +1,13 @@
-import React, { useRef, useState, useEffect } from "react";
-import * as Popover from "@radix-ui/react-popover";
-import FileCard from "./FileCard";
-import csvIcon from "@/assets/csv.png";
 import DocumentsIcon from "@/assets/documents.png";
-import { IFile } from "@/store/reducers/chat";
 import {
   extractFirstFiveLinesFromS3,
   getFileExtenstion,
   getFileLogo,
 } from "@/helpers";
+import { IFile } from "@/store/reducers/chat";
+import * as Popover from "@radix-ui/react-popover";
+import React, { useEffect, useState } from "react";
+import FileCard from "./FileCard";
 
 type Props = {
   files: IFile[];
@@ -74,7 +73,7 @@ const FilePanel: React.FC<Props> = (props) => {
               files?.length == 1 ? "grid-cols-1" : "grid-cols-2"
             } gap-3`}
           >
-            {files?.map((file, i) => (
+            {files?.map((file) => (
               <FileCard
                 showFade={true}
                 name={file.name}

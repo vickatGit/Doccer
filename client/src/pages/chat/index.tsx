@@ -24,7 +24,7 @@ const index = () => {
   const initialiseAbly = async (userId: string) => {
     await initAblyForUser(userId);
     subscribeToUserChannel(userId, {
-      onResponseStart: (data: any) => {
+      onResponseStart: () => {
         console.log("user :  onResponseStart");
         // update chat list entry to "AI generating..."
       },
@@ -48,7 +48,7 @@ const index = () => {
         updateChats(payload?.final?.msg);
       },
       onResponseFailed: (data: any) => {
-        console.log("user :  onResponseFailed");
+        console.log("user :  onResponseFailed", JSON.stringify(data));
         // show notification & mark chat as failed
       },
     });

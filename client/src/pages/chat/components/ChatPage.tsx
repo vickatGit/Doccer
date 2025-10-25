@@ -1,22 +1,21 @@
+import { docApi } from "@/api";
 import aiAvatar from "@/assets/mid_age_ai_sqr.jpg";
+import star from "@/assets/stars.png";
+import { checkType, getFileSizeMB, maxSize, rerieveFileInfos } from "@/helpers";
 import { AppDispatch, RootState } from "@/store";
 import { setChats } from "@/store/reducers/chat";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { subscribeToRoom, unsubscribeFromRoom } from "../../../config/ably";
 import { useChatPagination } from "../hooks/useChatPagination";
+import FilePanel from "./FIlePanel";
+import FileUpload from "./FileUpload";
 import FriendMessage from "./FriendMessage";
-import DocumentsIcon from "@/assets/documents.png";
 import Input from "./Input";
 import StreamMessage from "./StreamMessage";
 import UserMessage from "./UserMessage";
-import star from "@/assets/stars.png";
-import { XMarkIcon } from "@heroicons/react/24/outline";
-import FilePanel from "./FIlePanel";
-import { docApi } from "@/api";
-import { checkType, getFileSizeMB, maxSize, rerieveFileInfos } from "@/helpers";
-import FileUpload from "./FileUpload";
-import { useNavigate } from "react-router-dom";
 
 const ChatPage = () => {
   const navigate = useNavigate();
@@ -204,7 +203,7 @@ const ChatPage = () => {
     if (chatState.selectedChat?._id) {
       try {
         subscribeToRoom(chatState.selectedChat?._id, {
-          onResponseStart: (payload: any) => {
+          onResponseStart: () => {
             console.log("room : onResponseStart");
             // showThinkingAnimation();
           },
@@ -235,7 +234,7 @@ const ChatPage = () => {
             addMessage(payload.final);
             updateChats(payload?.final?.msg);
           },
-          onFailed: (payload: any) => {
+          onFailed: () => {
             console.log("room : onFailed");
             // showError(payload.error);
             setResponseStream(null);

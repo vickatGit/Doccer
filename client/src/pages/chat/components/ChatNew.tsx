@@ -9,7 +9,6 @@ import { AppDispatch } from "@/store";
 import { IChat, setSelectedChat } from "@/store/reducers/chat";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import placeholder from "../../../assets/image-placeholder.png";
 import FileCard from "./FileCard";
 
 type Props = {

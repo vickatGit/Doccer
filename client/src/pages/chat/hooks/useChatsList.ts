@@ -1,12 +1,10 @@
 // src/hooks/useChatList.ts
-import { useEffect, useRef, useState, useCallback } from "react";
-import { GetChatsParams, ChatDTO, getChats } from "../../../api";
-import debounce from "lodash.debounce";
-import { useSelector } from "react-redux";
-import { stat } from "fs";
 import { RootState } from "@/store";
-import { useDispatch } from "react-redux";
 import { setChats } from "@/store/reducers/chat";
+import debounce from "lodash.debounce";
+import { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getChats, GetChatsParams } from "../../../api";
 
 export type DateRange = { start?: string; end?: string } | null;
 

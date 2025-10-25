@@ -1,5 +1,4 @@
 // src/lib/ablyClient.ts
-import { docApi } from "@/api";
 import Ably from "ably";
 
 let ablyRealtime: any = null;

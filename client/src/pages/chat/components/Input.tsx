@@ -1,16 +1,13 @@
-import { docApi, getAnswer } from "@/api";
-import { checkType, getFileSizeMB, maxSize, rerieveFileInfos } from "@/helpers";
+import { getAnswer } from "@/api";
 import { AppDispatch, RootState } from "@/store";
 import { addMessage, IMessage, setChats } from "@/store/reducers/chat";
 import {
   ArrowUpTrayIcon,
   PaperAirplaneIcon,
 } from "@heroicons/react/24/outline";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
-import FileCard from "./FileCard";
-import FileUpload from "./FileUpload";
 
 type Props = {
   handleFileChange: any;
@@ -24,8 +21,6 @@ const Input: React.FC<Props> = ({
   handleFileChange,
   uploadFile,
   attachements,
-  fileInfos,
-  setFileInfos,
   setOpen,
 }) => {
   const chatState = useSelector((state: RootState) => state.chatReducer);

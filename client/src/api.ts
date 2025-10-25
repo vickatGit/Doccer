@@ -1,5 +1,4 @@
 import axios, { AxiosInstance } from "axios";
-import { useNavigate } from "react-router-dom";
 const env = import.meta.env.VITE_ENV;
 const devBaseurl = import.meta.env.VITE_DEV_BASE_URL;
 const prodBaseurl = import.meta.env.VITE_PROD_BASE_URL;
@@ -93,7 +92,7 @@ export const getMessages = async (
 };
 
 export const getAnswer = async (chatId: string, question: string) => {
-  const res = await fetch(
+  await fetch(
     `${
       env === "dev" ? devBaseurl : prodBaseurl
     }/api/chat/message/ask/${chatId}`,
