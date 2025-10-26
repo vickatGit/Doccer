@@ -5,18 +5,25 @@ import {
   getFileExtenstion,
   getFileLogo,
 } from "@/helpers";
-import { AppDispatch } from "@/store";
+import { AppDispatch, RootState } from "@/store";
 import { IChat, setSelectedChat } from "@/store/reducers/chat";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import FileCard from "./FileCard";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useMediaQuery } from "react-responsive";
 
 type Props = {
   chat: IChat;
 };
 const ChatNew: React.FC<Props> = ({ chat }) => {
+  const isMobile = useMediaQuery({ maxWidth: 600 });
+  const isIpad = useMediaQuery({ maxWidth: 1250 });
+  const chatState = useSelector((state: RootState) => state.chatReducer);
   const dispatch = useDispatch<AppDispatch>();
   const [files, setFiles] = useState<any[]>();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const processFiles = async () => {
@@ -47,7 +54,7 @@ const ChatNew: React.FC<Props> = ({ chat }) => {
   return (
     <div
       // className={`rounded-3xl w-full overflow-hidden  mt-2  bg-gradient-to-b from-[#E4E4E4] via-[#E4E4E4] to-[#c3dca8]  `}
-      className={`rounded-3xl  w-full overflow-hidden  mt-4 border border-white/20
+      className={`rounded-3xl  w-full max-w-[22rem] h-fit overflow-hidden  mt-4 border border-white/20
                bg-white/30 backdrop-blur-lg shadow-[0_4px_30px_rgba(0,0,0,0.05)]`}
       // className={`rounded-3xl w-full overflow-hidden  mt-2  `}
     >
@@ -79,10 +86,15 @@ const ChatNew: React.FC<Props> = ({ chat }) => {
           </div>
         </div>
         <div
-          className="w-8 h-8 rounded-full p-2 bg-[#EEEBF1] hover:bg-primary/10 cursor-pointer flex justify-center items-center"
+          className={`w-8 h-8 rounded-full p-2 ${
+            chatState.selectedChat?._id.toString() === chat._id.toString()
+              ? "bg-primary/10"
+              : "bg-[#EEEBF1]"
+          }  hover:bg-primary/10 cursor-pointer flex justify-center items-center`}
           onClick={() => {
             if (chat._id?.trim()) {
-              dispatch(setSelectedChat(chat));
+              navigate(`/chat/${chat._id}`);
+              // dispatch(setSelectedChat(chat));
             }
           }}
         >
@@ -106,7 +118,11 @@ const ChatNew: React.FC<Props> = ({ chat }) => {
       <div className={`relative rounded-2xl overflow-hidden mx-1 h-fit`}>
         <div
           className={`flex gap-2 px-6  ${
-            !files || files?.length === 0 ? "h-fit" : "h-55 mt-3"
+            isIpad && !isMobile
+              ? "h-50 mt-3"
+              : !files || files?.length === 0
+              ? "h-fit"
+              : "h-50 mt-3"
           }`}
         >
           {files?.slice(0, 3)?.map((file, index) => {
@@ -131,21 +147,31 @@ const ChatNew: React.FC<Props> = ({ chat }) => {
             );
           })}
         </div>
-        {chat.lastMessage && (
-          <div className="bottom-1 flex items-center z-30 mt-2 mb-1 left-1 right-1 h-fit py-1  rounded-3xl border border-white">
-            <div className="w-8 h-8 shrink-0 rounded-full p-2 ml-2 bg-[#EEEBF1] z-10 ">
-              <img src={star} />
-            </div>
-            <div className="flex flex-col ml-2">
-              <p className="text-[0.75rem] font-medium">{chat.lastMessage}</p>
-              <div className="flex text-[#5D5661] text-[0.6rem] font-medium items-center gap-2 mr-2.5 ">
-                <p className="break-all text-ellipsis line-clamp-1">
-                  {chat?.lastAnswer}
-                </p>
+        {
+          <div
+            className={`bottom-1 flex items-center z-30  mb-1 left-1 right-1 ${
+              isIpad && !isMobile ? "h-11" : "h-fit"
+            } py-1  ${
+              chat.lastMessage ? "rounded-3xl border border-white" : ""
+            }`}
+          >
+            {chat.lastMessage && (
+              <div className="w-8 h-8 shrink-0 rounded-full p-2 ml-2 bg-[#EEEBF1] z-10 ">
+                <img src={star} />
               </div>
-            </div>
+            )}
+            {chat.lastMessage && (
+              <div className="flex flex-col ml-2">
+                <p className="text-[0.75rem] font-medium">{chat.lastMessage}</p>
+                <div className="flex text-[#5D5661] text-[0.6rem] font-medium items-center gap-2 mr-2.5 ">
+                  <p className="break-all text-ellipsis line-clamp-1">
+                    {chat?.lastAnswer}
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
-        )}
+        }
       </div>
     </div>
   );
