@@ -1,6 +1,10 @@
 # Doccer 😎
 
-A Gen-Z flavoured README for Doccer - fast docs, file vibes, and chatty collabs. Keep it chill, but nerdy. ⚡️
+Doccer is an AI-powered document Q&A assistant built on a Retrieval-Augmented Generation (RAG) pipeline.
+
+Upload documents (PDFs, text, etc.), have them chunked and embedded into a vector database (e.g., Pinecone), and ask natural-language questions — Doccer retrieves the most relevant passages and uses an LLM to generate concise, source-backed answers.
+
+Tech stack: React + Vite frontend (`client/`), Node + TypeScript backend (`server/`), and Pulumi-based infrastructure (`IAC/`) for AWS hosting and storage.
 
 ## 📸 Screenshots
 
