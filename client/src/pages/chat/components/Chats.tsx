@@ -5,10 +5,13 @@ import { setSelectedChat } from "@/store/reducers/chat";
 import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/outline";
 import React, { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
+import { useMediaQuery } from "react-responsive";
 import { useChatList } from "../hooks/useChatsList";
 import ChatNew from "./ChatNew";
 
 const Chats: React.FC = () => {
+  const isMobile = useMediaQuery({ maxWidth: 600 });
+  const isIpad = useMediaQuery({ maxWidth: 1250 });
   const { chats, isLoading, hasMore, loadMore, setSearch, search, setChats } =
     useChatList({ initialLimit: 10 });
 
@@ -47,8 +50,20 @@ const Chats: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    console.log("isMobile Changed : ", isMobile);
+  }, [isMobile]);
+
+  useEffect(() => {
+    console.log("isIpad Changed : ", isIpad);
+  }, [isIpad]);
+
   return (
-    <div className="w-[27%] h-screen relative bg-sidebar shrink-0">
+    <div
+      className={`${
+        !isIpad && !isMobile ? "w-[27%]" : "w-full"
+      } h-screen relative bg-sidebar shrink-0`}
+    >
       {/* <div className="absolute inset-0 bg-gradient-to-b from-[#EBE5F0] to-[#E7E7E7]"></div> */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#ECE5F3] via-[#EEEDE4] to-[#EDDEE3]"></div>
 
@@ -93,15 +108,32 @@ const Chats: React.FC = () => {
         </div>
 
         <div
-          className="flex-1 overflow-auto mt-5 pt-30 mx-4 "
+          className="flex-1 overflow-auto mt-5 pt-30 mx-4 pb-20 "
           ref={containerRef}
         >
           {/* chat list sorted by updatedAt descending should already be from server */}
           {chats && Array.isArray(chats) && chats.length === 0 && !isLoading ? (
             <div className="p-4 text-sm text-muted">No chats yet</div>
-          ) : (
-            Array.isArray(chats) &&
+          ) : Array.isArray(chats) && !isIpad ? (
             chats.map((chat: any) => <ChatNew chat={chat} key={chat._id} />)
+          ) : (
+            <div
+              className={`flex flex-wrap gap-2 p-4 overflow-y-auto justify-start`}
+            >
+              {Array.isArray(chats) &&
+                chats.map((chat: any) =>
+                  chat.files.length > 0 ? (
+                    <div
+                      key={chat._id}
+                      className="flex-1 max-w-[22rem] min-w-[18rem]" // min-width prevents cards from shrinking too much
+                    >
+                      <ChatNew chat={chat} />
+                    </div>
+                  ) : (
+                    <></>
+                  )
+                )}
+            </div>
           )}
 
           <div className="py-4 flex justify-center">

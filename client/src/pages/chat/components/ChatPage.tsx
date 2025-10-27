@@ -3,11 +3,11 @@ import aiAvatar from "@/assets/mid_age_ai_sqr.jpg";
 import star from "@/assets/stars.png";
 import { checkType, getFileSizeMB, maxSize, rerieveFileInfos } from "@/helpers";
 import { AppDispatch, RootState } from "@/store";
-import { setChats } from "@/store/reducers/chat";
+import { setChats, setSelectedChat } from "@/store/reducers/chat";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { subscribeToRoom, unsubscribeFromRoom } from "../../../config/ably";
 import { useChatPagination } from "../hooks/useChatPagination";
 import FilePanel from "./FIlePanel";
@@ -19,6 +19,7 @@ import UserMessage from "./UserMessage";
 
 const ChatPage = () => {
   const navigate = useNavigate();
+  const { chatId } = useParams();
   const chatState = useSelector((state: RootState) => state.chatReducer);
   const authState = useSelector((state: RootState) => state.authReducer);
   const dispatch = useDispatch<AppDispatch>();
@@ -43,6 +44,13 @@ const ChatPage = () => {
       open || (chatState.selectedChat?.files?.length || 0) <= 0
     );
   }, [open]);
+
+  useEffect(() => {
+    console.log("param chatId : ", chatId);
+    const chat = chatState.chats?.find((chat) => chat._id === chatId);
+    if (chat) dispatch(setSelectedChat(chat));
+    else navigate("/chat");
+  }, [chatId]);
 
   const fetchFileInfos = async () => {
     if (!attachements || attachements.length === 0) return;
@@ -264,106 +272,114 @@ const ChatPage = () => {
 
   return (
     <div className="relative p-2 w-full h-screen">
-      <div className="rounded-[2rem] overflow-hidden w-full h-full flex flex-col flex-1 overflow-y-auto px-5  [background-image:linear-gradient(to_bottom,#F4F0F8,#F4F0F8,#F3F5ED,#F9EDF1,#F9EDF1)]">
-        <div
-          className="px-4 z-20 absolute rounded-[2rem] top-2 left-2 right-2 pt-2
+      {chatState.selectedChat && (
+        <div className="rounded-[2rem] overflow-hidden w-full h-full flex flex-col flex-1 overflow-y-auto px-5  [background-image:linear-gradient(to_bottom,#F4F0F8,#F4F0F8,#F3F5ED,#F9EDF1,#F9EDF1)]">
+          <div
+            className="px-4 z-20 absolute rounded-[2rem] top-2 left-2 right-2 pt-2
              backdrop-blur-lg
              bg-gradient-to-b from-white/20 via-white/10 to-transparent
              shadow-[0_4px_30px_rgba(0,0,0,0.1)]"
-          style={{
-            WebkitMaskImage:
-              "linear-gradient(to bottom, black 0%, black 85%, transparent 100%)",
-            maskImage:
-              "linear-gradient(to bottom, black 0%, black 85%, transparent 100%)",
-          }}
-        >
-          <div className="w-full mt-1 flex justify-center ">
-            {(!messages || messages.length === 0) && (
-              <div className="w-10 h-10 bg-white rounded-lg p-2">
-                <img src={star}></img>
-              </div>
-            )}
-            <div className="flex-1" />
-            {(!messages || messages.length === 0) && (
-              <p className="text-[1.5rem] font-medium">New Chat</p>
-            )}
-
-            <div className="flex-1" />
-
-            <div className="absolute top-3 right-3 w-10 h-10 bg-white rounded-lg p-3 hover:bg-primary/10 cursor-pointer">
-              <XMarkIcon />
-            </div>
-          </div>
-          <div className="w-full z-20 mt-3 pb-10">
-            <div className="flex items-center gap-2">
-              <div className="overflow-hidden rounded-full h-22 w-22 shrink-0">
-                <img
-                  src={aiAvatar}
-                  className="h-full w-full object-cover"
-                ></img>
-              </div>
-              <div className="flex flex-col">
-                <p className="text-xl">Hi, {authState.user?.name}!</p>
-                <p className="font-bold text-2xl">{`${
-                  chatState.selectedChat?.files?.length || 0 > 0
-                    ? "How Can I Help You ?"
-                    : "Upload File to Start the Chat"
-                } `}</p>
-              </div>
-              <div className="flex-1"> </div>
-            </div>
-          </div>
-        </div>
-        {doesFileExist && (
-          <div className="flex items-center justify-center absolute w-[97%] h-[97%]">
-            <div className="w-[25rem] h-[20rem] flex items-center justify-center">
-              <FileUpload
-                onFileChange={handleFileChange}
-                fileInfos={fileInfos}
-                uploadFile={uploadFile}
-                setOpen={setOpen}
-              />
-            </div>
-          </div>
-        )}
-        {!doesFileExist && (
-          <div className="flex w-full h-full gap-10 cursor-pointer">
-            <div
-              className="w-full h-full px-5 overflow-y-scroll flex-1 pb-40 pt-80"
-              ref={messagesRef}
-              onScroll={handleScroll}
-            >
-              {messages?.map((msg) =>
-                msg.type === "question" ? (
-                  <UserMessage msg={msg} key={msg?._id} />
-                ) : (
-                  <FriendMessage msg={msg} key={msg?._id} />
-                )
-              )}
-              {responseStream != null && responseStream != "" && (
-                <StreamMessage msg={responseStream} key={"response-stream"} />
-              )}
-              <div ref={bottomRef} key={"tracker"} />
-            </div>
-            {!chatState.selectedChat?.files ||
-              (chatState.selectedChat?.files?.length !== 0 && (
-                <div className="flex flex-col justify-center">
-                  <FilePanel files={chatState.selectedChat?.files} />
+            style={{
+              WebkitMaskImage:
+                "linear-gradient(to bottom, black 0%, black 85%, transparent 100%)",
+              maskImage:
+                "linear-gradient(to bottom, black 0%, black 85%, transparent 100%)",
+            }}
+          >
+            <div className="w-full mt-1 flex justify-center ">
+              {(!messages || messages.length === 0) && (
+                <div className="w-10 h-10 bg-white rounded-lg p-2">
+                  <img src={star}></img>
                 </div>
-              ))}
+              )}
+              <div className="flex-1" />
+              {(!messages || messages.length === 0) && (
+                <p className="text-[1.5rem] font-medium">New Chat</p>
+              )}
+
+              <div className="flex-1" />
+
+              <div
+                className="absolute top-3 right-3 w-10 h-10 bg-white rounded-lg p-3 hover:bg-primary/10 cursor-pointer"
+                onClick={() => {
+                  dispatch(setSelectedChat(null));
+                  navigate("/chat");
+                }}
+              >
+                <XMarkIcon />
+              </div>
+            </div>
+            <div className="w-full z-20 mt-3 pb-10">
+              <div className="flex items-center gap-2">
+                <div className="overflow-hidden rounded-full h-22 w-22 shrink-0">
+                  <img
+                    src={aiAvatar}
+                    className="h-full w-full object-cover"
+                  ></img>
+                </div>
+                <div className="flex flex-col">
+                  <p className="text-xl">Hi, {authState.user?.name}!</p>
+                  <p className="font-bold text-2xl">{`${
+                    chatState.selectedChat?.files?.length || 0 > 0
+                      ? "How Can I Help You ?"
+                      : "Upload File to Start the Chat"
+                  } `}</p>
+                </div>
+                <div className="flex-1"> </div>
+              </div>
+            </div>
           </div>
-        )}
-        {!doesFileExist && (
-          <Input
-            attachements={attachements}
-            fileInfos={fileInfos}
-            setFileInfos={setFileInfos}
-            handleFileChange={handleFileChange}
-            uploadFile={uploadFile}
-            setOpen={setOpen}
-          />
-        )}
-      </div>
+          {doesFileExist && (
+            <div className="flex items-center justify-center absolute w-[90%] h-[97%]">
+              <div className="w-full max-w-[25rem] h-[20rem] flex items-center justify-center">
+                <FileUpload
+                  onFileChange={handleFileChange}
+                  fileInfos={fileInfos}
+                  uploadFile={uploadFile}
+                  setOpen={setOpen}
+                />
+              </div>
+            </div>
+          )}
+          {!doesFileExist && (
+            <div className="flex w-full h-full gap-10 cursor-pointer">
+              <div
+                className="w-full h-full px-5 overflow-y-scroll flex-1 pb-40 pt-80"
+                ref={messagesRef}
+                onScroll={handleScroll}
+              >
+                {messages?.map((msg) =>
+                  msg.type === "question" ? (
+                    <UserMessage msg={msg} key={msg?._id} />
+                  ) : (
+                    <FriendMessage msg={msg} key={msg?._id} />
+                  )
+                )}
+                {responseStream != null && responseStream != "" && (
+                  <StreamMessage msg={responseStream} key={"response-stream"} />
+                )}
+                <div ref={bottomRef} key={"tracker"} />
+              </div>
+              {!chatState.selectedChat?.files ||
+                (chatState.selectedChat?.files?.length !== 0 && (
+                  <div className="flex flex-col justify-center">
+                    <FilePanel files={chatState.selectedChat?.files} />
+                  </div>
+                ))}
+            </div>
+          )}
+          {!doesFileExist && (
+            <Input
+              attachements={attachements}
+              fileInfos={fileInfos}
+              setFileInfos={setFileInfos}
+              handleFileChange={handleFileChange}
+              uploadFile={uploadFile}
+              setOpen={setOpen}
+            />
+          )}
+        </div>
+      )}
     </div>
   );
 };

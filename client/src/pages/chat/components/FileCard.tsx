@@ -14,7 +14,7 @@ const FileCard: React.FC<FileCardProps> = ({
 }) => {
   return (
     <div
-      className="relative w-36 h-40 z-30 shrink-0 border-white/20 rounded-[1rem]
+      className="relative w-36 h-40 z-30  border-white/20 rounded-[1rem]
       bg-white/10 backdrop-blur-lg overflow-hidden border-2
       shadow-[0_4px_30px_rgba(0,0,0,0.04)]"
     >

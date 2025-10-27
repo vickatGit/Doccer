@@ -1,17 +1,21 @@
 import { getUserDetails } from "@/api";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import AppSidebar from "@/pages/chat/components/AppSidebar";
 import ChatPage from "@/pages/chat/components/ChatPage";
 import Chats from "@/pages/chat/components/Chats";
-import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppDispatch, RootState } from "@/store";
 import { setUser } from "@/store/reducers/auth";
-import { setChats, setSelectedChat } from "@/store/reducers/chat";
+import { setChats } from "@/store/reducers/chat";
 import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useMediaQuery } from "react-responsive";
 import { useNavigate } from "react-router-dom";
 import { initAblyForUser, subscribeToUserChannel } from "../../config/ably";
+import BottomNav from "./components/BottomNav";
 
 const index = () => {
+  const isMobile = useMediaQuery({ maxWidth: 768 });
+  const isIpad = useMediaQuery({ maxWidth: 1250 });
   const dispatch = useDispatch<AppDispatch>();
   const chatState = useSelector((state: RootState) => state.chatReducer);
   const authReducer = useSelector((state: RootState) => state.authReducer);
@@ -83,19 +87,19 @@ const index = () => {
     }
   }, [chatState.selectedChat]);
   useEffect(() => {
-    const selectedChatId = localStorage.getItem("chatId");
-    if (selectedChatId && selectedChatId !== "undefined" && chatState.chats) {
-      const selectedChat =
-        Array.isArray(chatState.chats) &&
-        chatState.chats.find((chat) => chat._id === selectedChatId);
-      if (
-        selectedChat &&
-        selectedChat?._id?.trim() &&
-        chatState?.selectedChat?._id !== selectedChat?._id
-      ) {
-        dispatch(setSelectedChat(selectedChat));
-      }
-    }
+    // const selectedChatId = localStorage.getItem("chatId");
+    // if (selectedChatId && selectedChatId !== "undefined" && chatState.chats) {
+    //   const selectedChat =
+    //     Array.isArray(chatState.chats) &&
+    //     chatState.chats.find((chat) => chat._id === selectedChatId);
+    //   if (
+    //     selectedChat &&
+    //     selectedChat?._id?.trim() &&
+    //     chatState?.selectedChat?._id !== selectedChat?._id
+    //   ) {
+    //     dispatch(setSelectedChat(selectedChat));
+    //   }
+    // }
   }, [chatState.chats]);
   return (
     <SidebarProvider
@@ -108,8 +112,10 @@ const index = () => {
     >
       <AppSidebar />
       <main className="flex w-full h-screen overflow-scroll bg-gradient-to-b from-[#ece6f1] via-[#EEEDE4] to-[#EDDEE3]">
-        <Chats />
-        {chatState.selectedChat && <ChatPage />}
+        {(isMobile || isIpad) && !chatState.selectedChat && <Chats />}
+        {!isMobile && !isIpad && <Chats />}
+        <ChatPage />
+        {isMobile && <BottomNav />}
       </main>
     </SidebarProvider>
   );
