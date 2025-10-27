@@ -6,16 +6,16 @@ A Gen-Z flavoured README for Doccer - fast docs, file vibes, and chatty collabs.
 
 <table>
 <tr>
-<td><img width="400" src="https://github.com/user-attachments/assets/37e9d2ba-43fa-4003-8c43-78138e9dccbd" /></td>
-<td><img width="400" src="https://github.com/user-attachments/assets/531a60a5-8d65-409d-8dfe-541daa200d66" /></td>
+<td><img width="400" src=".github/assets/landing.png" /></td>
+<td><img width="400" src=".github/assets/home.png" /></td>
 </tr>
 <tr>
-<td><img width="400" src="https://github.com/user-attachments/assets/63ce4776-1712-4c13-a073-f3572ea8c3b3" /></td>
-<td><img width="400" src="https://github.com/user-attachments/assets/ff40dca8-b938-4878-9ab1-84615a268f54" /></td>
+<td><img width="400" src=".github/assets/upload.png" /></td>
+<td><img width="400" src=".github/assets/uploaded_files.png" /></td>
 </tr>
 <tr>
-<td><img width="400" src="https://github.com/user-attachments/assets/3cacad85-e046-4fa5-8aef-fec6f9fa94f2" /></td>
-<td><img width="400" src="https://github.com/user-attachments/assets/c0162541-8939-4f3c-92d7-1b823947dd56" /></td>
+<td><img width="400" src=".github/assets/ipad.png" /></td>
+<td><img width="400" src=".github/assets/bottom_nav.png" /></td>
 </tr>
 </table>
 
