@@ -110,7 +110,7 @@ const Chats: React.FC = () => {
         </div>
 
         <div
-          className="flex-1 overflow-auto mt-5 pt-30 mx-4 "
+          className="flex-1 overflow-auto mt-5 pt-30 mx-4 pb-20 "
           ref={containerRef}
         >
           {/* chat list sorted by updatedAt descending should already be from server */}

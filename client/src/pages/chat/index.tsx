@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { initAblyForUser, subscribeToUserChannel } from "../../config/ably";
 import { useMediaQuery } from "react-responsive";
+import BottomNav from "./components/BottomNav";
 
 const index = () => {
   const isMobile = useMediaQuery({ maxWidth: 768 });
@@ -114,6 +115,7 @@ const index = () => {
         {(isMobile || isIpad) && !chatState.selectedChat && <Chats />}
         {!isMobile && !isIpad && <Chats />}
         <ChatPage />
+        {isMobile && <BottomNav />}
       </main>
     </SidebarProvider>
   );
