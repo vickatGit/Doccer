@@ -14,8 +14,8 @@ A Gen-Z flavoured README for Doccer - fast docs, file vibes, and chatty collabs.
 <td><img width="400" src=".github/assets/uploaded_files.png" /></td>
 </tr>
 <tr>
-<td><img width="400" src=".github/assets/ipad.jpg" /></td>
-<td><img width="400" src=".github/assets/bottom_nav.jpg" /></td>
+<td><img width="400" src=".github/assets/ipad.JPG" /></td>
+<td><img width="400" src=".github/assets/bottom_nav.JPG" /></td>
 </tr>
 </table>
 
