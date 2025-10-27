@@ -1,14 +1,13 @@
 // src/components/Chats.tsx
 import { createChat } from "@/api";
-import { AppDispatch, RootState } from "@/store";
+import { AppDispatch } from "@/store";
 import { setSelectedChat } from "@/store/reducers/chat";
 import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/outline";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
+import { useMediaQuery } from "react-responsive";
 import { useChatList } from "../hooks/useChatsList";
 import ChatNew from "./ChatNew";
-import { useSelector } from "react-redux";
-import { useMediaQuery } from "react-responsive";
 
 const Chats: React.FC = () => {
   const isMobile = useMediaQuery({ maxWidth: 600 });
@@ -16,7 +15,6 @@ const Chats: React.FC = () => {
   const { chats, isLoading, hasMore, loadMore, setSearch, search, setChats } =
     useChatList({ initialLimit: 10 });
 
-  const chatState = useSelector((state: RootState) => state.chatReducer);
   const dispatch = useDispatch<AppDispatch>();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const thresholdPx = 200; // start loading older chats when within 200px of bottom

@@ -5,14 +5,13 @@ import {
   getFileExtenstion,
   getFileLogo,
 } from "@/helpers";
-import { AppDispatch, RootState } from "@/store";
-import { IChat, setSelectedChat } from "@/store/reducers/chat";
+import { RootState } from "@/store";
+import { IChat } from "@/store/reducers/chat";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import FileCard from "./FileCard";
-import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useMediaQuery } from "react-responsive";
+import { useNavigate } from "react-router-dom";
+import FileCard from "./FileCard";
 
 type Props = {
   chat: IChat;
@@ -21,7 +20,6 @@ const ChatNew: React.FC<Props> = ({ chat }) => {
   const isMobile = useMediaQuery({ maxWidth: 600 });
   const isIpad = useMediaQuery({ maxWidth: 1250 });
   const chatState = useSelector((state: RootState) => state.chatReducer);
-  const dispatch = useDispatch<AppDispatch>();
   const [files, setFiles] = useState<any[]>();
   const navigate = useNavigate();
 

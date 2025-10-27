@@ -1,16 +1,16 @@
 import { getUserDetails } from "@/api";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import AppSidebar from "@/pages/chat/components/AppSidebar";
 import ChatPage from "@/pages/chat/components/ChatPage";
 import Chats from "@/pages/chat/components/Chats";
-import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppDispatch, RootState } from "@/store";
 import { setUser } from "@/store/reducers/auth";
-import { setChats, setSelectedChat } from "@/store/reducers/chat";
+import { setChats } from "@/store/reducers/chat";
 import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useMediaQuery } from "react-responsive";
 import { useNavigate } from "react-router-dom";
 import { initAblyForUser, subscribeToUserChannel } from "../../config/ably";
-import { useMediaQuery } from "react-responsive";
 import BottomNav from "./components/BottomNav";
 
 const index = () => {

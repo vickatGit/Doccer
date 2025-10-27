@@ -3,7 +3,6 @@ import {
   ArrowRightEndOnRectangleIcon,
   BookmarkIcon,
   Cog6ToothIcon,
-  FingerPrintIcon,
   HomeIcon,
 } from "@heroicons/react/24/outline";
 import { useSelector } from "react-redux";
