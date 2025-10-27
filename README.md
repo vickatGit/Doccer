@@ -2,6 +2,40 @@
 
 A Gen-Z flavoured README for Doccer - fast docs, file vibes, and chatty collabs. Keep it chill, but nerdy. ⚡️
 
+## 📸 App Screenshots
+
+Here's what Doccer looks like in action:
+
+### Chat Interface & File Navigation 💬
+
+<img width="1920" height="1080" alt="Chat Interface" src="https://github.com/user-attachments/assets/37e9d2ba-43fa-4003-8c43-78138e9dccbd" />
+_Ask questions about your documents and navigate through your files with ease_
+
+### Document Q&A with Context 🤖
+
+<img width="1920" height="1080" alt="Document Q&A" src="https://github.com/user-attachments/assets/531a60a5-8d65-409d-8dfe-541daa200d66" />
+_Get AI-powered answers with source citations and context_
+
+### File Upload & Management 📁
+
+<img width="1920" height="1080" alt="File Upload" src="https://github.com/user-attachments/assets/63ce4776-1712-4c13-a073-f3572ea8c3b3" />
+_Drag & drop files, see previews, and manage your documents_
+
+### Real-time Chat Experience ⚡
+
+![Real-time Chat](https://github.com/user-attachments/assets/ff40dca8-b938-4878-9ab1-84615a268f54)
+_Experience fluid, real-time conversations with typing indicators_
+
+### Dark Mode & Modern UI 🌙
+
+<img width="1920" height="1080" alt="Dark Mode" src="https://github.com/user-attachments/assets/3cacad85-e046-4fa5-8aef-fec6f9fa94f2" />
+_Easy on the eyes with full dark mode support_
+
+### Document Context View 📄
+
+![Document Context](https://github.com/user-attachments/assets/c0162541-8939-4f3c-92d7-1b823947dd56)
+_See the relevant document sections that inform the AI's responses_
+
 ---
 
 ## 🌐 Production URL

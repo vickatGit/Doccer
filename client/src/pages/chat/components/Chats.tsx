@@ -123,14 +123,18 @@ const Chats: React.FC = () => {
               className={`flex flex-wrap gap-2 p-4 overflow-y-auto justify-start`}
             >
               {Array.isArray(chats) &&
-                chats.map((chat: any) => (
-                  <div
-                    key={chat._id}
-                    className="flex-1 max-w-[22rem] min-w-[18rem]" // min-width prevents cards from shrinking too much
-                  >
-                    <ChatNew chat={chat} />
-                  </div>
-                ))}
+                chats.map((chat: any) =>
+                  chat.files.length > 0 ? (
+                    <div
+                      key={chat._id}
+                      className="flex-1 max-w-[22rem] min-w-[18rem]" // min-width prevents cards from shrinking too much
+                    >
+                      <ChatNew chat={chat} />
+                    </div>
+                  ) : (
+                    <></>
+                  )
+                )}
             </div>
           )}
 

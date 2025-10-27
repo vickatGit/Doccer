@@ -37,6 +37,9 @@ const BottomNav = () => {
           <div
             key={item.path}
             onClick={() => navigate(item.path)}
+            onError={(e) => {
+              (e.currentTarget as HTMLImageElement).style.display = "none";
+            }}
             className={`flex w-10 h-10 p-2 flex-col items-center justify-center gap-1 text-sm transition-all ${
               isActive
                 ? "text-[#2684fc] scale-110"
