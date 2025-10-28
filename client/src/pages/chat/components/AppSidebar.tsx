@@ -63,7 +63,7 @@ const AppSidebar = () => {
         {userState.user && (
           <div className="flex flex-col gap-3 justify-center">
             <div className="w-8 h-8 bg-black rounded-full overflow-hidden ">
-              {/* <img src={userState.user?.img} className="object-cover" /> */}
+              <img src={userState.user?.img} className="object-cover" />
             </div>
             <div
               className="p-[0.55rem] rounded-md hover:bg-primary/10 cursor-pointer"
