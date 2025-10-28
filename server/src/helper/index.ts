@@ -215,16 +215,69 @@ Examples:
   return contextLabel;
 };
 
+// export const getAnswer = async (
+//   question: string,
+//   chatId: string
+// ): Promise<Stream<V2ChatStreamResponse>> => {
+//   let queryEmb = await aiClient.embed({
+//     texts: [question],
+//     model: "embed-english-v3.0",
+//     inputType: "search_query",
+//   });
+//   let chat = await Chat.findOne({ _id: chatId });
+//   try {
+//     const queryVector = queryEmb.embeddings.float[0];
+//     const vectorDb = getVectorDb();
+//     const vectorChunks = await vectorDb.query({
+//       topK: 5,
+//       vector: queryVector,
+//       includeMetadata: true,
+//       filter: {
+//         fileId: { $in: chat.files.map((file) => file.toString()) },
+//       },
+//     });
+
+//     const textChunks = vectorChunks.matches.map(
+//       (chunk) => chunk?.metadata?.text
+//     );
+//     const context = textChunks.join(" ");
+//     const res = await aiClient.chatStream({
+//       model: "command-a-03-2025",
+//       messages: [
+//         {
+//           role: "system",
+//           content: "You are an assistant for question-answering tasks.",
+//         },
+//         {
+//           role: "user",
+//           content: `Use the following context to answer briefly format.
+//                               Question: ${question}
+//                               Context: ${context}`,
+//         },
+//       ],
+//       temperature: 0.3,
+//     });
+
+//     return res;
+//   } catch (error) {
+//     console.log("error : ", error);
+//   }
+// };
+
 export const getAnswer = async (
   question: string,
-  chatId: string
-): Promise<Stream<V2ChatStreamResponse>> => {
-  let queryEmb = await aiClient.embed({
+  chatId: string,
+  streamSpeedMs: number = Number(process.env.STREAM_SPEED_IN_MS) || 50 // adjustable stream speed (ms delay between chunks)
+): Promise<AsyncGenerator<V2ChatStreamResponse>> => {
+  const queryEmb = await aiClient.embed({
     texts: [question],
     model: "embed-english-v3.0",
     inputType: "search_query",
   });
-  let chat = await Chat.findOne({ _id: chatId });
+
+  const chat = await Chat.findOne({ _id: chatId });
+  if (!chat) throw new Error("Chat not found");
+
   try {
     const queryVector = queryEmb.embeddings.float[0];
     const vectorDb = getVectorDb();
@@ -232,16 +285,14 @@ export const getAnswer = async (
       topK: 5,
       vector: queryVector,
       includeMetadata: true,
-      filter: {
-        fileId: { $in: chat.files.map((file) => file.toString()) },
-      },
+      filter: { fileId: { $in: chat.files.map((f) => f.toString()) } },
     });
 
-    const textChunks = vectorChunks.matches.map(
-      (chunk) => chunk?.metadata?.text
-    );
+    const textChunks = vectorChunks.matches.map((c) => c?.metadata?.text || "");
     const context = textChunks.join(" ");
-    const res = await aiClient.chatStream({
+
+    // Get raw Cohere stream
+    const cohereStream = await aiClient.chatStream({
       model: "command-a-03-2025",
       messages: [
         {
@@ -250,16 +301,26 @@ export const getAnswer = async (
         },
         {
           role: "user",
-          content: `Use the following context to answer briefly format. 
-                              Question: ${question}
-                              Context: ${context}`,
+          content: `Use the following context to answer briefly.
+                    Question: ${question}
+                    Context: ${context}`,
         },
       ],
       temperature: 0.3,
     });
 
-    return res;
+    // Throttled async generator wrapper
+    async function* throttledStream() {
+      for await (const event of cohereStream) {
+        yield event;
+        await new Promise((res) => setTimeout(res, streamSpeedMs)); // Control rate here
+      }
+    }
+
+    // Return throttled stream instead of raw Cohere stream
+    return throttledStream();
   } catch (error) {
-    console.log("error : ", error);
+    console.error("getAnswer error:", error);
+    throw error;
   }
 };
