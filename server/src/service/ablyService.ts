@@ -14,6 +14,32 @@ const rest = new Ably.Rest({ key: process.env.ABLY_API_KEY });
 const userChannelName = (userId: string) => `user:${userId}`;
 const roomChannelName = (roomId: string) => `room:${roomId}`;
 
+export async function checkAblyHealth(): Promise<{
+  ok: boolean;
+  message: string;
+}> {
+  try {
+    // Try a lightweight publish to a transient channel
+    const channel = rest.channels.get("healthcheck");
+    const timestamp = new Date().toISOString();
+
+    await channel.publish("heartbeat", { timestamp });
+
+    // Optionally confirm via history fetch (verifies message delivery)
+    const history = await channel.history({ limit: 1 });
+    if (history?.items?.length > 0) {
+      return { ok: true, message: "✅ Ably is healthy and responding." };
+    }
+
+    return { ok: true, message: "✅ Ably publish succeeded (no history yet)." };
+  } catch (err: any) {
+    return {
+      ok: false,
+      message: `❌ Ably health check failed: ${err.message || err}`,
+    };
+  }
+}
+
 /**
  * createTokenRequestForUser(userId)
  * - Returns a token-request object for client to use.
@@ -174,6 +200,7 @@ export function getRoomPresenceMembers(roomId: string): Promise<any[]> {
  * Exports
  */
 export default {
+  checkAblyHealth,
   createTokenRequestForUser,
   publishToRoom,
   publishToUser,
