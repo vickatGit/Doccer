@@ -4,6 +4,9 @@ import Ably from "ably";
 let ablyRealtime: any = null;
 let userChannel: any = null;
 const roomChannels: Map<string, any> = new Map();
+const env = import.meta.env.VITE_ENV;
+const devBaseurl = import.meta.env.VITE_DEV_BASE_URL;
+const prodBaseurl = import.meta.env.VITE_PROD_BASE_URL;
 
 export async function initAblyForUser(userId: string) {
   if (ablyRealtime) return ablyRealtime;
@@ -13,7 +16,9 @@ export async function initAblyForUser(userId: string) {
 
   // create realtime client using token request (Ably SDK will refresh token using tokenRequest info)
   ablyRealtime = new Ably.Realtime({
-    authUrl: "http://localhost:5001/api/ably/token-request",
+    authUrl: `${
+      env === "dev" ? devBaseurl : prodBaseurl
+    }/api/ably/token-request`,
     authMethod: "POST",
     authHeaders: {
       Authorization: `Bearer ${localStorage.getItem("authToken")}`,
