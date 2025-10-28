@@ -1,10 +1,10 @@
-import express from "express";
-import { config } from "dotenv";
-import { dbConnect } from "./utils/dbConnect";
-import routes from "./routes";
-import cors from "cors";
 import { CohereClientV2 } from "cohere-ai";
-import { Pinecone } from "@pinecone-database/pinecone";
+import cors from "cors";
+import { config } from "dotenv";
+import express from "express";
+import routes from "./routes";
+import { checkAblyHealth } from "./service/ablyService";
+import { dbConnect } from "./utils/dbConnect";
 config();
 
 const app = express();
@@ -37,22 +37,25 @@ app.listen(process.env.PORT, async () => {
   //   console.error(err);
   // }
 
-  try {
-    const client = new Pinecone({
-      apiKey: process.env.PINECONE_API_KEY!,
-    });
+  // try {
+  //   const client = new Pinecone({
+  //     apiKey: process.env.PINECONE_API_KEY!,
+  //   });
 
-    const indexName = "doccer";
-    const index = client.index(indexName);
+  //   const indexName = "doccer";
+  //   const index = client.index(indexName);
 
-    // This will check if the index metadata is accessible
-    const stats: any = await index.describeIndexStats();
+  //   // This will check if the index metadata is accessible
+  //   const stats: any = await index.describeIndexStats();
 
-    console.log("✅ Pinecone index is healthy!");
-    console.log(`Total vectors: ${JSON.stringify(stats)}`);
-    return { ok: true, stats };
-  } catch (error: any) {
-    console.error("❌ Pinecone health check failed:", error.message);
-    return { ok: false, error };
-  }
+  //   console.log("✅ Pinecone index is healthy!");
+  //   console.log(`Total vectors: ${JSON.stringify(stats)}`);
+  //   return { ok: true, stats };
+  // } catch (error: any) {
+  //   console.error("❌ Pinecone health check failed:", error.message);
+  //   return { ok: false, error };
+  // }
+
+  const ablyStatus = await checkAblyHealth();
+  console.log(ablyStatus.message);
 });
